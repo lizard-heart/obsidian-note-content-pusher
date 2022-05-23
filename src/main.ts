@@ -94,7 +94,9 @@ export default class ListModified extends Plugin {
 			}
 			createANote(newTitle, newContent)
 		} catch (err) {
-			new Notice(`Didn't detect correct syntax. Doing nothing`)
+			if (this.settings.automaticPush == false) {
+				new Notice(`Didn't detect correct syntax. Doing nothing`)
+			}
 		}
 
 	}

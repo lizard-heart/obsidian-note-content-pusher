@@ -3,10 +3,12 @@ import ListModified from "./main";
 
 export interface ListModifiedSettings {
 	indicatorCharacter: string;
+	automaticPush: boolean;
 }
 
 export const DEFAULT_SETTINGS: ListModifiedSettings = {
 	indicatorCharacter: ">>",
+	automaticPush: false,
 };
 
 export class ListModifiedSettingTab extends PluginSettingTab {
@@ -36,6 +38,18 @@ export class ListModifiedSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.indicatorCharacter)
 					.onChange(async (value) => {
 						this.plugin.settings.indicatorCharacter = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Automatic Push")
+			.setDesc("Automatically push content to a new note, without you running a command. May slow down your computer or cause issues.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.automaticPush)
+					.onChange(async (value) => {
+						this.plugin.settings.automaticPush = value;
 						await this.plugin.saveSettings();
 					})
 			);
