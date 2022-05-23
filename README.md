@@ -1,5 +1,7 @@
 # Obsidian Note Content Pusher
-An Obsidian plugin to automatically create notes with some specified content when you link to a note that doesn't yet exist.
+_An Obsidian plugin to automatically create notes with some specified content when you link to a note that doesn't yet exist._
+
+As requested in [this](https://forum.obsidian.md/t/push-content-to-link-automatically-apply-tags-links-embeds-into-newly-created-links-through-link-insert-content/36844) forum post.
 
 ## How to use
 - When you want to link to a file that doesn't yet exist, do it with this syntax: `[[title of new file]]>>{content you want to appear in file}`
@@ -15,3 +17,6 @@ alias: alternate title
 ```
 
 ## Customization/Settings
+There are currently two settings. First, you can customize the string of characters the plugin will look for when pushing content to a file. Make this something you don't often type elsewhere. The default is `>>`. For example, if you changed this setting to `%%%`, you would type something like `[[title]]%%%{content}` to push content to a new note.
+
+The second setting allows you to toggle on Automatic Push. This will automatically check for any text in the correct format when you switch to a new line in your note. This way you never have to run the plugin's command to trigger the note creation. You will still be able to run the command manually at any time.
