@@ -28,13 +28,7 @@ export async function createANote(path: String, content: String): Promise<TFile>
 	const { vault } = app;
 
 	try {
-		const createdFile = await vault.create(
-			path+".md", content
-
-		);
-
-		new Notice(`Creating file and pushing content...`);
-
+		const createdFile = await vault.create(path+".md", content);
 		return createdFile;
 	} catch (err) {
 		if (String(err).includes("already exists")) {
@@ -61,6 +55,10 @@ export default class ListModified extends Plugin {
 				key: "tab"
 			}],
 		});
+
+		this.registerEvent(
+			this.app.metadataCache.on("changed", this.automaticPush)
+		);
 
 		this.addSettingTab(new ListModifiedSettingTab(this.app, this));
 	}
@@ -93,6 +91,7 @@ export default class ListModified extends Plugin {
 				this.app.vault.modify(view.file, newEditorText.split("|" + indicatorCharacter)[0] + "|" + newEditorText.split("|" + indicatorCharacter)[1])
 			}
 			createANote(newTitle, newContent)
+			new Notice(`Creating file and pushing content...`);
 		} catch (err) {
 			if (this.settings.automaticPush == false) {
 				new Notice(`Didn't detect correct syntax. Doing nothing`)
@@ -100,6 +99,21 @@ export default class ListModified extends Plugin {
 		}
 
 	}
+
+	private automaticPush = serialize(
+		async (file: TFile, _data: string, cache: CachedMetadata) => {
+			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+			const indicatorCharacter = this.settings.indicatorCharacter
+			const editor = view.editor;
+			const currentPos = editor.getCursor();
+			const nextPos = { line: currentPos.line, ch: currentPos.ch + 1 };
+			const zeroPos = { line: currentPos.line, ch: 0 };
+			const lineString = editor.getRange(zeroPos, nextPos);
+			if (this.settings.automaticPush == true && lineString.includes("]]"+indicatorCharacter+"{")==false) {
+				await this.createAndPush();
+			}
+		}
+	);
 
 
 	private async loadSettings() {
