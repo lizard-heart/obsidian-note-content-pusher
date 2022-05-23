@@ -44,7 +44,7 @@ export class ListModifiedSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Automatic Push")
-			.setDesc("Automatically push content to a new note, without you running a command. May slow down your computer or cause issues.")
+			.setDesc("Automatically push content to a new note, when your cursor moves to a new line (without you running a command).")
 			.addToggle((toggle) =>
 				toggle
 					.setValue(this.plugin.settings.automaticPush)
