@@ -5,17 +5,8 @@ import {
 	Notice,
 	Plugin,
 	TFile,
-	moment,
-	getAllTags,
-	Vault,
 } from "obsidian";
-import * as CodeMirror from "codemirror";
 
-import {
-	getAllDailyNotes,
-	getDailyNote,
-	createDailyNote,
-} from "obsidian-daily-notes-interface";
 import {
 	ListModifiedSettings,
 	DEFAULT_SETTINGS,
@@ -42,7 +33,6 @@ export async function createANote(path: String, content: String): Promise<TFile>
 
 export default class ListModified extends Plugin {
 	settings: ListModifiedSettings;
-	private cmEditors: CodeMirror.Editor[];
 
 	async onload() {
 		await this.loadSettings();
@@ -50,10 +40,6 @@ export default class ListModified extends Plugin {
 			id: "create-and-push",
 			name: "Create file and push content",
 			callback: () => this.createAndPush(),
-			hotkeys: [{
-				modifiers: ["Mod"],
-				key: "tab"
-			}],
 		});
 
 		this.registerEvent(
