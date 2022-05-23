@@ -37,7 +37,11 @@ export async function createANote(path: String, content: String): Promise<TFile>
 
 		return createdFile;
 	} catch (err) {
-		console.error(`Failed to create file`, err);
+		if (String(err).includes("already exists")) {
+			new Notice(`File alreay exists. Not creating any file.`)
+		} else {
+			new Notice(`Something didn't work.`)
+		}
 	}
 }
 
@@ -73,21 +77,26 @@ export default class ListModified extends Plugin {
 		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 		const editor = view.editor;
 		const editorText = editor.getValue();
-		var newContent = editorText.split("]]>>{")[1].split("}")[0];
-		const tempSplit = editorText.split("]]>>{");
-
-		console.log(newContent);
-		const firstPart = tempSplit[0].split("[[");
-		var newTitle = firstPart[firstPart.length-1];
-		const restOfNote = tempSplit[1].split("}")[1]
-		this.app.vault.modify(view.file, tempSplit[0] + "]]" + restOfNote)
-		const newEditorText = tempSplit[0] + "]]" + restOfNote
-		if (newTitle.includes("|>>")) {
-			var newContent = "---\nalias: " + newTitle.split("|>>")[1] + "\n---\n" + newContent
-			newTitle = newTitle.split("|>>")[0]
-			this.app.vault.modify(view.file, newEditorText.split("|>>")[0]+"|"+newEditorText.split("|>>")[1])
+		const indicatorCharacter = this.settings.indicatorCharacter
+		try {
+			var newContent = editorText.split("]]" + indicatorCharacter + "{")[1].split("}")[0];
+			const tempSplit = editorText.split("]]" + indicatorCharacter + "{");
+			console.log(newContent);
+			const firstPart = tempSplit[0].split("[[");
+			var newTitle = firstPart[firstPart.length - 1];
+			const restOfNote = tempSplit[1].split("}")[1]
+			this.app.vault.modify(view.file, tempSplit[0] + "]]" + restOfNote)
+			const newEditorText = tempSplit[0] + "]]" + restOfNote
+			if (newTitle.includes("|" + indicatorCharacter)) {
+				var newContent = "---\nalias: " + newTitle.split("|" + indicatorCharacter)[1] + "\n---\n" + newContent
+				newTitle = newTitle.split("|" + indicatorCharacter)[0]
+				this.app.vault.modify(view.file, newEditorText.split("|" + indicatorCharacter)[0] + "|" + newEditorText.split("|" + indicatorCharacter)[1])
+			}
+			createANote(newTitle, newContent)
+		} catch (err) {
+			new Notice(`Didn't detect correct syntax. Doing nothing`)
 		}
-		createANote(newTitle,newContent)
+
 	}
 
 

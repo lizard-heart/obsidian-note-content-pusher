@@ -2,15 +2,11 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import ListModified from "./main";
 
 export interface ListModifiedSettings {
-	outputFormat: string;
-	tags: string;
-	excludedFolders: string;
+	indicatorCharacter: string;
 }
 
 export const DEFAULT_SETTINGS: ListModifiedSettings = {
-	outputFormat: "- [[link]]",
-	tags: "",
-	excludedFolders: "",
+	indicatorCharacter: ">>",
 };
 
 export class ListModifiedSettingTab extends PluginSettingTab {
@@ -27,7 +23,21 @@ export class ListModifiedSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl("h2", { text: "No Settings Currently" });
+		containerEl.createEl("h2", { text: "Settings" });
 
+		new Setting(containerEl)
+			.setName("Content Pusher Character")
+			.setDesc(
+				"Specify the string of characters you want to use to indicate when you want to push content to a new note."
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder(">>")
+					.setValue(this.plugin.settings.indicatorCharacter)
+					.onChange(async (value) => {
+						this.plugin.settings.indicatorCharacter = value;
+						await this.plugin.saveSettings();
+					})
+			);
 	}
 }
