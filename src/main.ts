@@ -22,11 +22,7 @@ export async function createANote(path: String, content: String): Promise<TFile>
 		const createdFile = await vault.create(path+".md", content);
 		return createdFile;
 	} catch (err) {
-		if (String(err).includes("already exists")) {
-			new Notice(`File alreay exists. Not creating any file.`)
-		} else {
-			new Notice(`Something didn't work.`)
-		}
+		new Notice(`Something didn't work.`)
 	}
 }
 
@@ -55,35 +51,67 @@ export default class ListModified extends Plugin {
 
 	onunload() {}
 
-
-	createAndPush() {
-
+	// the first function that runs
+	async createAndPush() {
+		const app = window.app as App;
 		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 		const editor = view.editor;
 		const editorText = editor.getValue();
 		const indicatorCharacter = this.settings.indicatorCharacter
+		var newContent = ""
+		var newTitle = ""
+
+		// check if syntax to push file is present
 		try {
-			var newContent = editorText.split("]]" + indicatorCharacter + "{")[1].split("}")[0];
+			newContent = editorText.split("]]" + indicatorCharacter + "{")[1].split("}")[0];
+
+			// fix formatting of original note
 			const tempSplit = editorText.split("]]" + indicatorCharacter + "{");
-			console.log(newContent);
 			const firstPart = tempSplit[0].split("[[");
-			var newTitle = firstPart[firstPart.length - 1];
+			newTitle = firstPart[firstPart.length - 1];
 			const restOfNote = tempSplit[1].split("}")[1]
 			this.app.vault.modify(view.file, tempSplit[0] + "]]" + restOfNote)
 			const newEditorText = tempSplit[0] + "]]" + restOfNote
 			if (newTitle.includes("|" + indicatorCharacter)) {
-				var newContent = "---\nalias: " + newTitle.split("|" + indicatorCharacter)[1] + "\n---\n" + newContent
+				newContent = "---\nalias: " + newTitle.split("|" + indicatorCharacter)[1] + "\n---\n" + newContent
 				newTitle = newTitle.split("|" + indicatorCharacter)[0]
 				this.app.vault.modify(view.file, newEditorText.split("|" + indicatorCharacter)[0] + "|" + newEditorText.split("|" + indicatorCharacter)[1])
 			}
-			createANote(newTitle, newContent)
-			new Notice(`Creating file and pushing content...`);
+
+			// check if file exists already
+			const files = app.vault.getMarkdownFiles();
+			var filesWithName: TFile[] = [];
+			var baseTitleName = newTitle;
+			if (baseTitleName.includes("/")) {
+				var pathParts = baseTitleName.split("/");
+				baseTitleName = pathParts[pathParts.length - 1];
+			}
+			files.forEach(function (myFile: TFile) {
+				if (myFile.path == newTitle + ".md") {
+					filesWithName.push(myFile);
+					console.log(myFile);
+				}
+			});
+
+			// append content or create new file
+			if (filesWithName.length == 0) {
+				new Notice(`Creating file and pushing content...`);
+				createANote(newTitle, newContent)
+			} else {
+				new Notice(`File already exists. Appending content...`);
+				const existingFileText = await app.vault.cachedRead(filesWithName[0]);
+				if (this.settings.shouldPrepend == true) {
+					this.app.vault.modify(filesWithName[0], newContent + "\n" + existingFileText)
+				} else {
+					this.app.vault.modify(filesWithName[0], existingFileText + "\n" + newContent)
+				}
+			}
+
 		} catch (err) {
 			if (this.settings.automaticPush == false) {
 				new Notice(`Didn't detect correct syntax. Doing nothing`)
 			}
 		}
-
 	}
 
 	private automaticPush = serialize(

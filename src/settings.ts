@@ -4,11 +4,13 @@ import ListModified from "./main";
 export interface ListModifiedSettings {
 	indicatorCharacter: string;
 	automaticPush: boolean;
+	shouldPrepend: boolean;
 }
 
 export const DEFAULT_SETTINGS: ListModifiedSettings = {
 	indicatorCharacter: ">>",
 	automaticPush: false,
+	shouldPrepend: false,
 };
 
 export class ListModifiedSettingTab extends PluginSettingTab {
@@ -53,5 +55,18 @@ export class ListModifiedSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
+
+		new Setting(containerEl)
+			.setName("Prepend to existing file")
+			.setDesc("If a file already exists, prepends the content to the existing file instead of putting it at the end.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.shouldPrepend)
+					.onChange(async (value) => {
+						this.plugin.settings.shouldPrepend = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
 	}
 }
