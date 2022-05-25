@@ -3,10 +3,7 @@ _An Obsidian plugin to automatically create notes with some specified content wh
 
 As requested in [this](https://forum.obsidian.md/t/push-content-to-link-automatically-apply-tags-links-embeds-into-newly-created-links-through-link-insert-content/36844) forum post.
 
-<a href="https://ko-fi.com/lizardheart">
-  <img align="left" alt="One time donation" width="200px" src="https://raw.githubusercontent.com/lizard-heart/lizard-heart/main/61e11e22d8ff4a5b4a1b3346_Supportbutton-1.png" />
-</a>
-<br> <br>
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/lizardheart)
 
 ## How to use
 - When you want to link to a file that doesn't yet exist, do it with this syntax: `[[title of new file]]>>{content you want to appear in file}`
