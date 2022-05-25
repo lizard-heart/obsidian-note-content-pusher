@@ -86,6 +86,11 @@ export default class ListModified extends Plugin {
 				var pathParts = baseTitleName.split("/");
 				baseTitleName = pathParts[pathParts.length - 1];
 			}
+			var heading = "";
+			if (newTitle.includes("#")) {
+				heading = newTitle.split("#")[1];
+				newTitle = newTitle.split("#")[0];
+			}
 			files.forEach(function (myFile: TFile) {
 				if (myFile.path == newTitle + ".md") {
 					filesWithName.push(myFile);
@@ -100,10 +105,14 @@ export default class ListModified extends Plugin {
 			} else {
 				new Notice(`File already exists. Appending content...`);
 				const existingFileText = await app.vault.cachedRead(filesWithName[0]);
-				if (this.settings.shouldPrepend == true) {
-					this.app.vault.modify(filesWithName[0], newContent + "\n" + existingFileText)
+				if (heading == "") {
+					if (this.settings.shouldPrepend == true) {
+						this.app.vault.modify(filesWithName[0], newContent + "\n" + existingFileText)
+					} else {
+						this.app.vault.modify(filesWithName[0], existingFileText + "\n" + newContent)
+					}
 				} else {
-					this.app.vault.modify(filesWithName[0], existingFileText + "\n" + newContent)
+					this.app.vault.modify(filesWithName[0], existingFileText.split("# " + heading)[0] + "\n# " + heading + "\n" + newContent + "\n" + existingFileText.split("# " + heading)[1])
 				}
 			}
 
