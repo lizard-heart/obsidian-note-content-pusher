@@ -3,7 +3,7 @@ _An Obsidian plugin to automatically create notes with some specified content wh
 
 As requested in [this](https://forum.obsidian.md/t/push-content-to-link-automatically-apply-tags-links-embeds-into-newly-created-links-through-link-insert-content/36844) forum post.
 
-<a href="https://www.youtube.com/channel/UC0ZCat9S6KoR7dAiIezBfhg">
+<a href="https://ko-fi.com/lizardheart">
   <img align="left" alt="One time donation" width="200px" src="https://raw.githubusercontent.com/lizard-heart/lizard-heart/main/61e11e22d8ff4a5b4a1b3346_Supportbutton-1.png" />
 </a>
 <br> <br>
