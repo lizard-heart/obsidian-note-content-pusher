@@ -3,6 +3,11 @@ _An Obsidian plugin to automatically create notes with some specified content wh
 
 As requested in [this](https://forum.obsidian.md/t/push-content-to-link-automatically-apply-tags-links-embeds-into-newly-created-links-through-link-insert-content/36844) forum post.
 
+<a href="https://www.youtube.com/channel/UC0ZCat9S6KoR7dAiIezBfhg">
+  <img align="left" alt="One time donation" width="200px" src="https://raw.githubusercontent.com/lizard-heart/lizard-heart/main/61e11e22d8ff4a5b4a1b3346_Supportbutton-1.png" />
+</a>
+<br> <br>
+
 ## How to use
 - When you want to link to a file that doesn't yet exist, do it with this syntax: `[[title of new file]]>>{content you want to appear in file}`
 - Then run the only command in this plugin, "Create file and push content," either from the command palette or with a hotkey. The command will automatically replace content in the original file to look like this: `[[title of new file]]`, will create the file, and add the content within the brackets to it, all without leaving the currently open note.
