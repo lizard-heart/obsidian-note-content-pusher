@@ -5,6 +5,11 @@ As requested in [this](https://forum.obsidian.md/t/push-content-to-link-automati
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/lizardheart)
 
+
+## Demo
+<img src="https://user-images.githubusercontent.com/62226606/170394694-1e138cf3-67ac-47f1-a1d4-0bea28d4c7b8.mov" width=70%>
+
+
 ## How to use
 - When you want to link to a file that doesn't yet exist, do it with this syntax: `[[title of new file]]>>{content you want to appear in file}`
 - Then run the only command in this plugin, "Create file and push content," either from the command palette or with a hotkey. The command will automatically replace content in the original file to look like this: `[[title of new file]]`, will create the file, and add the content within the brackets to it, all without leaving the currently open note.
