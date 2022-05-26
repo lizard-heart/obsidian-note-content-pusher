@@ -1,5 +1,5 @@
 # Obsidian Note Content Pusher
-_An Obsidian plugin to automatically create notes with some specified content when you link to a note that doesn't yet exist._
+_An Obsidian plugin to add (prepend or append) specified content to a note (existing or new) without opening another pane._
 
 As requested in [this](https://forum.obsidian.md/t/push-content-to-link-automatically-apply-tags-links-embeds-into-newly-created-links-through-link-insert-content/36844) forum post.
 
