@@ -59,11 +59,25 @@ export default class ListModified extends Plugin {
 		const editorText = editor.getValue();
 		const indicatorCharacter = this.settings.indicatorCharacter
 		var newContent = ""
+		var inlineSetting = ""
 		var newTitle = ""
+		var newAlias = ""
+		var shouldPrepend = this.settings.shouldPrepend
 
 		// check if syntax to push file is present
 		try {
 			newContent = editorText.split("]]" + indicatorCharacter + "{")[1].split("}")[0];
+			if (newContent.includes(this.settings.inlineSettingCharacter)) {
+				inlineSetting = newContent.split(this.settings.inlineSettingCharacter)[1];
+				newContent = newContent.split(this.settings.inlineSettingCharacter)[0];
+			}
+
+			if (inlineSetting == "append") {
+				shouldPrepend = false;
+			} else if (inlineSetting == "prepend") {
+				shouldPrepend = true;
+			}
+		
 
 			// fix formatting of original note
 			const tempSplit = editorText.split("]]" + indicatorCharacter + "{");
@@ -73,7 +87,7 @@ export default class ListModified extends Plugin {
 			this.app.vault.modify(view.file, tempSplit[0] + "]]" + restOfNote)
 			const newEditorText = tempSplit[0] + "]]" + restOfNote
 			if (newTitle.includes("|" + indicatorCharacter)) {
-				newContent = "---\nalias: " + newTitle.split("|" + indicatorCharacter)[1] + "\n---\n" + newContent
+				newAlias = newTitle.split("|" + indicatorCharacter)[1]
 				newTitle = newTitle.split("|" + indicatorCharacter)[0]
 				this.app.vault.modify(view.file, newEditorText.split("|" + indicatorCharacter)[0] + "|" + newEditorText.split("|" + indicatorCharacter)[1])
 			}
@@ -91,28 +105,81 @@ export default class ListModified extends Plugin {
 				heading = newTitle.split("#")[1];
 				newTitle = newTitle.split("#")[0];
 			}
+			console.log("base: " + baseTitleName)
 			files.forEach(function (myFile: TFile) {
-				if (myFile.path == newTitle + ".md") {
+				if (myFile.basename == baseTitleName) {
 					filesWithName.push(myFile);
 					console.log(myFile);
 				}
 			});
+			var realExistingFile: TFile = null;
+			if (filesWithName.length > 0) {
+				if (filesWithName.length > 1) {
+					filesWithName.forEach(function (myFile: TFile) {
+						if (myFile.path == newTitle + ".md") {
+							realExistingFile = myFile;
+						}
+					});
+				} else {
+					realExistingFile = filesWithName[0];
+				}
+			}
 
 			// append content or create new file
+			if (newAlias != "") {
+				newAlias = newAlias+", "
+			}
 			if (filesWithName.length == 0) {
 				new Notice(`Creating file and pushing content...`);
-				createANote(newTitle, newContent)
+				if (newAlias == "") {
+					createANote(newTitle, newContent);
+				} else {
+					newContent = "---\nalias: " + newAlias + "\n---\n" + newContent;
+					createANote(newTitle, newContent);
+				}
 			} else {
-				new Notice(`File already exists. Appending content...`);
-				const existingFileText = await app.vault.cachedRead(filesWithName[0]);
-				if (heading == "") {
-					if (this.settings.shouldPrepend == true) {
-						this.app.vault.modify(filesWithName[0], newContent + "\n" + existingFileText)
+				var pushingType = "Appending";
+				if (shouldPrepend) {
+					pushingType = "Prepending";
+				}
+				new Notice(`File already exists. ${pushingType} content...`);
+				const fullExistingFileText = await app.vault.cachedRead(realExistingFile);
+				var newYaml = ""
+				var existingFileText = ""
+				if (fullExistingFileText.includes("---")) {
+					console.log(fullExistingFileText.split("---"))
+					if (fullExistingFileText.split("---").length > 2) {
+						var currentYaml = fullExistingFileText.split("---")[1]
+						for (let i=2; i<fullExistingFileText.split("---").length; i++) {
+							if (i==2){
+								existingFileText = existingFileText + fullExistingFileText.split("---")[i]
+							} else {
+								existingFileText = existingFileText + fullExistingFileText.split("---")[i] + "---"
+							}
+						}
+						if (currentYaml.includes("alias:")) {
+							newYaml = "---" + currentYaml.split("alias:")[0] + "alias: " + newAlias + currentYaml.split("alias:")[1] + "---"
+						} else {
+							newYaml = "---alias: " + newAlias + currentYaml + "---"
+						}
 					} else {
-						this.app.vault.modify(filesWithName[0], existingFileText + "\n" + newContent)
+						newYaml = "---\nalias: " + newAlias + "\n---\n";
+						existingFileText = fullExistingFileText;
 					}
 				} else {
-					this.app.vault.modify(filesWithName[0], existingFileText.split("# " + heading)[0] + "\n# " + heading + "\n" + newContent + "\n" + existingFileText.split("# " + heading)[1])
+					if (newAlias!="") {
+						newYaml = "---\nalias: " + newAlias + "\n---\n";
+					}
+					existingFileText = fullExistingFileText;
+				};
+				if (heading == "") {
+					if (shouldPrepend == true) {
+						this.app.vault.modify(realExistingFile, newYaml + newContent + "\n" + existingFileText)
+					} else {
+						this.app.vault.modify(realExistingFile, newYaml + existingFileText + "\n" + newContent)
+					}
+				} else {
+					this.app.vault.modify(realExistingFile, newYaml + existingFileText.split("# " + heading)[0] + "\n# " + heading + "\n" + newContent + "\n" + existingFileText.split("# " + heading)[1])
 				}
 			}
 

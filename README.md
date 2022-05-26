@@ -22,12 +22,22 @@ alias: alternate title
 ---
 ```
 
+### Inline Settings
+To adjust how the text is pushed to a note, you can add inline settings within the curly brackts by using the inline settings characters (by default `@@`). Currently, the only available inline settings are:
+ - **append**: overrides the push to existing notes setting to add new content to the end of an existing file.
+ - **prepend**: overrides the push to existing notes setting to add new content to the beginning of an existing file.
+
+ For example, to tell the plugin to prepend content, you could write: `[[title of existing file]]>>{content to add at the beginning@@prepend}`
+
 ## Customization/Settings
 ### Content Pusher Characters
 First, you can customize the string of characters the plugin will look for when pushing content to a file. Make this something you don't often type elsewhere. The default is `>>`. For example, if you changed this setting to `%%%`, you would type something like `[[title]]%%%{content}` to push content to a new note.
 
+### Inline Settings Characters
+The next setting allows you to customize the characters used to to tell the plugin when to look for inline settings within the curly brackts.
+
 ### Automatic Push
-The second setting allows you to toggle on Automatic Push. This will automatically check for any text in the correct format when you switch to a new line in your note. This way you never have to run the plugin's command to trigger the note creation. You will still be able to run the command manually at any time.
+The third setting allows you to toggle on Automatic Push. This will automatically check for any text in the correct format when you switch to a new line in your note. This way you never have to run the plugin's command to trigger the note creation. You will still be able to run the command manually at any time.
 
 ### Push to Existing Notes
-The third setting allows you to toggle whether content being pushed to new notes will be added to the beginning or to the end of the note. By default, the content will be appended (added to the end), but turning the toggle on will add new content to the beginning.
+The fourth setting allows you to toggle whether content being pushed to new notes will be added to the beginning or to the end of the note. By default, the content will be appended (added to the end), but turning the toggle on will add new content to the beginning.

@@ -3,12 +3,14 @@ import ListModified from "./main";
 
 export interface ListModifiedSettings {
 	indicatorCharacter: string;
+	inlineSettingCharacter: string;
 	automaticPush: boolean;
 	shouldPrepend: boolean;
 }
 
 export const DEFAULT_SETTINGS: ListModifiedSettings = {
 	indicatorCharacter: ">>",
+	inlineSettingCharacter: "@@",
 	automaticPush: false,
 	shouldPrepend: false,
 };
@@ -40,6 +42,21 @@ export class ListModifiedSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.indicatorCharacter)
 					.onChange(async (value) => {
 						this.plugin.settings.indicatorCharacter = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Inline Settings Character")
+			.setDesc(
+				"Specify the string of characters you want to use within the curly brackts to customize how the content is pushed."
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder("@@")
+					.setValue(this.plugin.settings.inlineSettingCharacter)
+					.onChange(async (value) => {
+						this.plugin.settings.inlineSettingCharacter = value;
 						await this.plugin.saveSettings();
 					})
 			);
