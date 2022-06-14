@@ -1,9 +1,19 @@
 # Obsidian Note Content Pusher
-_An Obsidian plugin to automatically create notes with some specified content when you link to a note that doesn't yet exist._
+_An Obsidian plugin to add (prepend or append) specified content to a note (existing or new) without opening another pane._
 
 As requested in [this](https://forum.obsidian.md/t/push-content-to-link-automatically-apply-tags-links-embeds-into-newly-created-links-through-link-insert-content/36844) forum post.
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/lizardheart)
+<a href="https://www.buymeacoffee.com/lizardheart">
+ <img align="left" alt="Buy me a Coffee" width="200px" src="https://raw.githubusercontent.com/lizard-heart/lizard-heart/main/buy-me-a-cofee.png" />
+</a>
+
+<br>
+<br>
+
+
+## Demo
+<img src="https://user-images.githubusercontent.com/62226606/170394694-1e138cf3-67ac-47f1-a1d4-0bea28d4c7b8.mov" width=70%>
+
 
 ## How to use
 - When you want to link to a file that doesn't yet exist, do it with this syntax: `[[title of new file]]>>{content you want to appear in file}`
