@@ -99,7 +99,7 @@ export default class ListModified extends Plugin {
 				}
 
 				// check if file exists already
-				const files = app.vault.getMarkdownFiles();
+				const files = this.app.vault.getMarkdownFiles();
 				var filesWithName: TFile[] = [];
 				var baseTitleName = newTitle;
 				if (baseTitleName.includes("/")) {
@@ -150,11 +150,11 @@ export default class ListModified extends Plugin {
 				if (filesWithName.length == 0) {
 					new Notice(`Creating file and pushing content...`);
 					if (newAlias == "") {
-						await app.vault.create(newTitle + ".md", newContent);
+						await this.app.vault.create(newTitle + ".md", newContent);
 						// createANote(newTitle, newContent);
 					} else {
 						newContent = "---\nalias: " + newAlias + "\n---\n" + newContent;
-						await app.vault.create(newTitle + ".md", newContent);
+						await this.app.vault.create(newTitle + ".md", newContent);
 						// createANote(newTitle, newContent);
 					}
 				} else {
@@ -163,7 +163,7 @@ export default class ListModified extends Plugin {
 						pushingType = "Prepending";
 					}
 					new Notice(`File already exists. ${pushingType} content...`);
-					const fullExistingFileText = await app.vault.read(realExistingFile);
+					const fullExistingFileText = await this.app.vault.read(realExistingFile);
 					var newYaml = ""
 					var existingFileText = ""
 					if (fullExistingFileText.includes("---")) {
